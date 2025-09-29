@@ -9,39 +9,98 @@
 <body>
     <div class="container">
         <header>
-            <h1>🌍 Travel Tracker</h1>
-            <p>Keep track of your amazing journeys</p>
+            <h1>�🇸 aUSA Travel Tracker</h1>
+            <p>Explore the beautiful states of America</p>
         </header>
 
         <main>
             <section class="stats-section">
                 <div class="stats-grid">
-                    <div class="stat-card">
-                        <h3 id="total-trips">0</h3>
-                        <p>Total Trips</p>
+                    <div class="stat-card visited">
+                        <h3 id="states-visited">0</h3>
+                        <p>States Visited</p>
                     </div>
-                    <div class="stat-card">
-                        <h3 id="countries-visited">0</h3>
-                        <p>Countries Visited</p>
+                    <div class="stat-card planned">
+                        <h3 id="states-planned">0</h3>
+                        <p>Plan to Visit</p>
                     </div>
-                    <div class="stat-card">
-                        <h3 id="total-days">0</h3>
-                        <p>Days Traveled</p>
+                    <div class="stat-card not-visited">
+                        <h3 id="states-not-visited">50</h3>
+                        <p>Not Visited</p>
+                    </div>
+                    <div class="stat-card total">
+                        <h3>50</h3>
+                        <p>Total States</p>
                     </div>
                 </div>
             </section>
 
-            <section class="add-trip-section">
-                <button id="add-trip-btn" class="btn-primary">+ Add New Trip</button>
+            <section class="navigation-section">
+                <div class="nav-buttons">
+                    <button id="states-tab" class="nav-btn active">US States</button>
+                    <button id="trips-tab" class="nav-btn">International Trips</button>
+                </div>
             </section>
 
-            <section class="trips-section">
-                <h2>Your Trips</h2>
+            <section id="states-section" class="content-section">
+                <div class="filter-section">
+                    <label for="status-filter">Filter by status:</label>
+                    <select id="status-filter">
+                        <option value="all">All States</option>
+                        <option value="visited">Visited</option>
+                        <option value="plan-to-visit">Plan to Visit</option>
+                        <option value="not-visited">Not Visited</option>
+                    </select>
+                </div>
+                <div id="states-container" class="states-grid">
+                    <!-- States will be dynamically added here -->
+                </div>
+            </section>
+
+            <section id="trips-section" class="content-section" style="display: none;">
+                <div class="add-trip-section">
+                    <button id="add-trip-btn" class="btn-primary">+ Add New Trip</button>
+                </div>
+                <h2>Your International Trips</h2>
                 <div id="trips-container" class="trips-grid">
                     <!-- Trips will be dynamically added here -->
                 </div>
             </section>
         </main>
+
+        <!-- Modal for updating state status -->
+        <div id="state-modal" class="modal">
+            <div class="modal-content">
+                <span class="close state-close">&times;</span>
+                <h2 id="state-modal-title">Update State</h2>
+                <form id="state-form">
+                    <div class="form-group">
+                        <label for="state-name">State:</label>
+                        <input type="text" id="state-name" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="state-status">Status:</label>
+                        <select id="state-status" required>
+                            <option value="not-visited">Not Visited</option>
+                            <option value="plan-to-visit">Plan to Visit</option>
+                            <option value="visited">Visited</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="visit-date-group" style="display: none;">
+                        <label for="visit-date">Visit Date:</label>
+                        <input type="date" id="visit-date">
+                    </div>
+                    <div class="form-group">
+                        <label for="state-notes">Notes:</label>
+                        <textarea id="state-notes" rows="3" placeholder="Add your thoughts about this state..."></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Update State</button>
+                        <button type="button" id="state-cancel-btn" class="btn-secondary">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
         <!-- Modal for adding/editing trips -->
         <div id="trip-modal" class="modal">
@@ -54,8 +113,61 @@
                         <input type="text" id="destination" required>
                     </div>
                     <div class="form-group">
-                        <label for="country">Country:</label>
-                        <input type="text" id="country" required>
+                        <label for="state">State:</label>
+                        <select id="state" required>
+                            <option value="">Select a state...</option>
+                            <option value="Alabama">Alabama</option>
+                            <option value="Alaska">Alaska</option>
+                            <option value="Arizona">Arizona</option>
+                            <option value="Arkansas">Arkansas</option>
+                            <option value="California">California</option>
+                            <option value="Colorado">Colorado</option>
+                            <option value="Connecticut">Connecticut</option>
+                            <option value="Delaware">Delaware</option>
+                            <option value="Florida">Florida</option>
+                            <option value="Georgia">Georgia</option>
+                            <option value="Hawaii">Hawaii</option>
+                            <option value="Idaho">Idaho</option>
+                            <option value="Illinois">Illinois</option>
+                            <option value="Indiana">Indiana</option>
+                            <option value="Iowa">Iowa</option>
+                            <option value="Kansas">Kansas</option>
+                            <option value="Kentucky">Kentucky</option>
+                            <option value="Louisiana">Louisiana</option>
+                            <option value="Maine">Maine</option>
+                            <option value="Maryland">Maryland</option>
+                            <option value="Massachusetts">Massachusetts</option>
+                            <option value="Michigan">Michigan</option>
+                            <option value="Minnesota">Minnesota</option>
+                            <option value="Mississippi">Mississippi</option>
+                            <option value="Missouri">Missouri</option>
+                            <option value="Montana">Montana</option>
+                            <option value="Nebraska">Nebraska</option>
+                            <option value="Nevada">Nevada</option>
+                            <option value="New Hampshire">New Hampshire</option>
+                            <option value="New Jersey">New Jersey</option>
+                            <option value="New Mexico">New Mexico</option>
+                            <option value="New York">New York</option>
+                            <option value="North Carolina">North Carolina</option>
+                            <option value="North Dakota">North Dakota</option>
+                            <option value="Ohio">Ohio</option>
+                            <option value="Oklahoma">Oklahoma</option>
+                            <option value="Oregon">Oregon</option>
+                            <option value="Pennsylvania">Pennsylvania</option>
+                            <option value="Rhode Island">Rhode Island</option>
+                            <option value="South Carolina">South Carolina</option>
+                            <option value="South Dakota">South Dakota</option>
+                            <option value="Tennessee">Tennessee</option>
+                            <option value="Texas">Texas</option>
+                            <option value="Utah">Utah</option>
+                            <option value="Vermont">Vermont</option>
+                            <option value="Virginia">Virginia</option>
+                            <option value="Washington">Washington</option>
+                            <option value="West Virginia">West Virginia</option>
+                            <option value="Wisconsin">Wisconsin</option>
+                            <option value="Wyoming">Wyoming</option>
+                            <option value="Washington D.C.">Washington D.C.</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="start-date">Start Date:</label>

@@ -2,6 +2,34 @@
 class TravelStorage {
     constructor() {
         this.storageKey = 'travelTracker_trips';
+        this.statesKey = 'travelTracker_states';
+        this.initializeStates();
+    }
+
+    // Initialize all 50 US states with default status
+    initializeStates() {
+        const existingStates = localStorage.getItem(this.statesKey);
+        if (!existingStates) {
+            const allStates = [
+                'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 
+                'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 
+                'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 
+                'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 
+                'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 
+                'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 
+                'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 
+                'Wisconsin', 'Wyoming'
+            ];
+
+            const statesData = allStates.map(state => ({
+                name: state,
+                status: 'not-visited', // not-visited, plan-to-visit, visited
+                visitDate: null,
+                notes: ''
+            }));
+
+            localStorage.setItem(this.statesKey, JSON.stringify(statesData));
+        }
     }
 
     // Get all trips from localStorage
@@ -51,6 +79,33 @@ class TravelStorage {
         return Date.now().toString(36) + Math.random().toString(36).substr(2);
     }
 
+    // Get all states data
+    getAllStates() {
+        const states = localStorage.getItem(this.statesKey);
+        return states ? JSON.parse(states) : [];
+    }
+
+    // Update state status
+    updateStateStatus(stateName, status, visitDate = null, notes = '') {
+        const states = this.getAllStates();
+        const stateIndex = states.findIndex(state => state.name === stateName);
+        
+        if (stateIndex !== -1) {
+            states[stateIndex].status = status;
+            states[stateIndex].visitDate = visitDate;
+            states[stateIndex].notes = notes;
+            localStorage.setItem(this.statesKey, JSON.stringify(states));
+            return states[stateIndex];
+        }
+        return null;
+    }
+
+    // Get state by name
+    getStateByName(stateName) {
+        const states = this.getAllStates();
+        return states.find(state => state.name === stateName);
+    }
+
     // Calculate statistics
     getStatistics() {
         const trips = this.getAllTrips();
@@ -70,6 +125,21 @@ class TravelStorage {
             totalTrips,
             totalCountries,
             totalDays
+        };
+    }
+
+    // Calculate US states statistics
+    getStatesStatistics() {
+        const states = this.getAllStates();
+        const visited = states.filter(state => state.status === 'visited').length;
+        const planToVisit = states.filter(state => state.status === 'plan-to-visit').length;
+        const notVisited = states.filter(state => state.status === 'not-visited').length;
+
+        return {
+            visited,
+            planToVisit,
+            notVisited,
+            total: 50
         };
     }
 

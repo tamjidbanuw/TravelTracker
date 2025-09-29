@@ -3,37 +3,66 @@ class TravelTracker {
     constructor() {
         this.storage = new TravelStorage();
         this.currentEditingTrip = null;
+        this.currentEditingState = null;
+        this.currentView = 'states';
         this.init();
     }
 
     init() {
         this.bindEvents();
+        this.renderStates();
         this.renderTrips();
         this.updateStatistics();
     }
 
     bindEvents() {
-        // Modal controls
+        // Navigation
+        const statesTab = document.getElementById('states-tab');
+        const tripsTab = document.getElementById('trips-tab');
+
+        statesTab.addEventListener('click', () => this.switchView('states'));
+        tripsTab.addEventListener('click', () => this.switchView('trips'));
+
+        // State filter
+        const statusFilter = document.getElementById('status-filter');
+        statusFilter.addEventListener('change', () => this.renderStates());
+
+        // State modal controls
+        const stateModal = document.getElementById('state-modal');
+        const stateCloseBtn = document.querySelector('.state-close');
+        const stateCancelBtn = document.getElementById('state-cancel-btn');
+        const stateForm = document.getElementById('state-form');
+        const stateStatus = document.getElementById('state-status');
+
+        stateCloseBtn.addEventListener('click', () => this.closeStateModal());
+        stateCancelBtn.addEventListener('click', () => this.closeStateModal());
+        stateForm.addEventListener('submit', (e) => this.handleStateFormSubmit(e));
+        stateStatus.addEventListener('change', () => this.toggleVisitDateField());
+
+        // Trip modal controls
         const addTripBtn = document.getElementById('add-trip-btn');
-        const modal = document.getElementById('trip-modal');
-        const closeBtn = document.querySelector('.close');
+        const tripModal = document.getElementById('trip-modal');
+        const tripCloseBtn = document.querySelector('.trip-close');
         const cancelBtn = document.getElementById('cancel-btn');
         const tripForm = document.getElementById('trip-form');
 
-        addTripBtn.addEventListener('click', () => this.openModal());
-        closeBtn.addEventListener('click', () => this.closeModal());
-        cancelBtn.addEventListener('click', () => this.closeModal());
-        tripForm.addEventListener('submit', (e) => this.handleFormSubmit(e));
+        addTripBtn.addEventListener('click', () => this.openTripModal());
+        tripCloseBtn.addEventListener('click', () => this.closeTripModal());
+        cancelBtn.addEventListener('click', () => this.closeTripModal());
+        tripForm.addEventListener('submit', (e) => this.handleTripFormSubmit(e));
 
-        // Close modal when clicking outside
+        // Close modals when clicking outside
         window.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                this.closeModal();
+            if (e.target === stateModal) {
+                this.closeStateModal();
+            }
+            if (e.target === tripModal) {
+                this.closeTripModal();
             }
         });
     }
 
-    openModal(trip = null) {
+    openTripModal(trip = null) {
         const modal = document.getElementById('trip-modal');
         const modalTitle = document.getElementById('modal-title');
         const form = document.getElementById('trip-form');
@@ -42,7 +71,7 @@ class TravelTracker {
             // Editing existing trip
             this.currentEditingTrip = trip;
             modalTitle.textContent = 'Edit Trip';
-            this.populateForm(trip);
+            this.populateTripForm(trip);
         } else {
             // Adding new trip
             this.currentEditingTrip = null;
@@ -53,13 +82,13 @@ class TravelTracker {
         modal.style.display = 'block';
     }
 
-    closeModal() {
+    closeTripModal() {
         const modal = document.getElementById('trip-modal');
         modal.style.display = 'none';
         this.currentEditingTrip = null;
     }
 
-    populateForm(trip) {
+    populateTripForm(trip) {
         document.getElementById('destination').value = trip.destination;
         document.getElementById('country').value = trip.country;
         document.getElementById('start-date').value = trip.startDate;
@@ -67,9 +96,9 @@ class TravelTracker {
         document.getElementById('notes').value = trip.notes || '';
     }
 
-    handleFormSubmit(e) {
+    handleTripFormSubmit(e) {
         e.preventDefault();
-        
+
         const formData = {
             destination: document.getElementById('destination').value.trim(),
             country: document.getElementById('country').value.trim(),
@@ -92,7 +121,7 @@ class TravelTracker {
             this.storage.saveTrip(formData);
         }
 
-        this.closeModal();
+        this.closeTripModal();
         this.renderTrips();
         this.updateStatistics();
     }
@@ -148,7 +177,7 @@ class TravelTracker {
     editTrip(tripId) {
         const trip = this.storage.getTripById(tripId);
         if (trip) {
-            this.openModal(trip);
+            this.openTripModal(trip);
         }
     }
 
@@ -160,11 +189,94 @@ class TravelTracker {
         }
     }
 
+    switchView(view) {
+        this.currentView = view;
+
+        // Update navigation
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`${view}-tab`).classList.add('active');
+
+        // Show/hide sections
+        document.getElementById('states-section').style.display = view === 'states' ? 'block' : 'none';
+        document.getElementById('trips-section').style.display = view === 'trips' ? 'block' : 'none';
+    }
+
+    renderStates() {
+        const container = document.getElementById('states-container');
+        const filter = document.getElementById('status-filter').value;
+        const states = this.storage.getAllStates();
+
+        let filteredStates = states;
+        if (filter !== 'all') {
+            filteredStates = states.filter(state => state.status === filter);
+        }
+
+        // Sort states alphabetically
+        filteredStates.sort((a, b) => a.name.localeCompare(b.name));
+
+        container.innerHTML = filteredStates.map(state => this.createStateCard(state)).join('');
+    }
+
+    createStateCard(state) {
+        const statusClass = state.status;
+        const statusText = state.status.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
+        const visitDate = state.visitDate ? new Date(state.visitDate).toLocaleDateString() : '';
+
+        return `
+            <div class="state-card" onclick="app.openStateModal('${state.name}')">
+                <h3>${state.name}</h3>
+                <div class="status ${statusClass}">${statusText}</div>
+                ${visitDate ? `<div class="visit-date">Visited: ${visitDate}</div>` : ''}
+                ${state.notes ? `<div class="notes">${state.notes}</div>` : ''}
+            </div>
+        `;
+    }
+
+    openStateModal(stateName) {
+        const state = this.storage.getStateByName(stateName);
+        if (!state) return;
+
+        this.currentEditingState = stateName;
+
+        document.getElementById('state-name').value = state.name;
+        document.getElementById('state-status').value = state.status;
+        document.getElementById('visit-date').value = state.visitDate || '';
+        document.getElementById('state-notes').value = state.notes || '';
+
+        this.toggleVisitDateField();
+        document.getElementById('state-modal').style.display = 'block';
+    }
+
+    closeStateModal() {
+        document.getElementById('state-modal').style.display = 'none';
+        this.currentEditingState = null;
+    }
+
+    toggleVisitDateField() {
+        const status = document.getElementById('state-status').value;
+        const visitDateGroup = document.getElementById('visit-date-group');
+        visitDateGroup.style.display = status === 'visited' ? 'block' : 'none';
+    }
+
+    handleStateFormSubmit(e) {
+        e.preventDefault();
+
+        const status = document.getElementById('state-status').value;
+        const visitDate = status === 'visited' ? document.getElementById('visit-date').value : null;
+        const notes = document.getElementById('state-notes').value.trim();
+
+        this.storage.updateStateStatus(this.currentEditingState, status, visitDate, notes);
+
+        this.closeStateModal();
+        this.renderStates();
+        this.updateStatistics();
+    }
+
     updateStatistics() {
-        const stats = this.storage.getStatistics();
-        document.getElementById('total-trips').textContent = stats.totalTrips;
-        document.getElementById('countries-visited').textContent = stats.totalCountries;
-        document.getElementById('total-days').textContent = stats.totalDays;
+        const stateStats = this.storage.getStatesStatistics();
+        document.getElementById('states-visited').textContent = stateStats.visited;
+        document.getElementById('states-planned').textContent = stateStats.planToVisit;
+        document.getElementById('states-not-visited').textContent = stateStats.notVisited;
     }
 }
 
