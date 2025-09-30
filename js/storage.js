@@ -12,38 +12,6 @@ class TravelStorage {
         if (!existingStates) {
             const statesData = this.getStatesWithDetails();
             localStorage.setItem(this.statesKey, JSON.stringify(statesData));
-        } else {
-            // Update existing states with abbreviations if they don't have them
-            this.updateStatesWithAbbreviations();
-        }
-    }
-
-    // Update existing states to add abbreviations
-    updateStatesWithAbbreviations() {
-        const states = this.getAllStates();
-        const stateFlags = {
-            'Alabama': 'AL', 'Alaska': 'AK', 'Arizona': 'AZ', 'Arkansas': 'AR', 'California': 'CA',
-            'Colorado': 'CO', 'Connecticut': 'CT', 'Delaware': 'DE', 'Florida': 'FL', 'Georgia': 'GA',
-            'Hawaii': 'HI', 'Idaho': 'ID', 'Illinois': 'IL', 'Indiana': 'IN', 'Iowa': 'IA',
-            'Kansas': 'KS', 'Kentucky': 'KY', 'Louisiana': 'LA', 'Maine': 'ME', 'Maryland': 'MD',
-            'Massachusetts': 'MA', 'Michigan': 'MI', 'Minnesota': 'MN', 'Mississippi': 'MS', 'Missouri': 'MO',
-            'Montana': 'MT', 'Nebraska': 'NE', 'Nevada': 'NV', 'New Hampshire': 'NH', 'New Jersey': 'NJ',
-            'New Mexico': 'NM', 'New York': 'NY', 'North Carolina': 'NC', 'North Dakota': 'ND', 'Ohio': 'OH',
-            'Oklahoma': 'OK', 'Oregon': 'OR', 'Pennsylvania': 'PA', 'Rhode Island': 'RI', 'South Carolina': 'SC',
-            'South Dakota': 'SD', 'Tennessee': 'TN', 'Texas': 'TX', 'Utah': 'UT', 'Vermont': 'VT',
-            'Virginia': 'VA', 'Washington': 'WA', 'West Virginia': 'WV', 'Wisconsin': 'WI', 'Wyoming': 'WY'
-        };
-
-        let needsUpdate = false;
-        states.forEach(state => {
-            if (!state.abbreviation && stateFlags[state.name]) {
-                state.abbreviation = stateFlags[state.name];
-                needsUpdate = true;
-            }
-        });
-
-        if (needsUpdate) {
-            localStorage.setItem(this.statesKey, JSON.stringify(states));
         }
     }
 
@@ -102,73 +70,19 @@ class TravelStorage {
             'Wyoming': { capital: 'Cheyenne', nickname: 'Equality State', bestCities: ['Cheyenne', 'Casper', 'Jackson'], famousPlaces: ['Yellowstone National Park', 'Grand Teton'], recommendedDays: 6, estimatedBudget: 1200 }
         };
 
-        const stateFlags = {
-            'Alabama': 'AL', 'Alaska': 'AK', 'Arizona': 'AZ', 'Arkansas': 'AR', 'California': 'CA',
-            'Colorado': 'CO', 'Connecticut': 'CT', 'Delaware': 'DE', 'Florida': 'FL', 'Georgia': 'GA',
-            'Hawaii': 'HI', 'Idaho': 'ID', 'Illinois': 'IL', 'Indiana': 'IN', 'Iowa': 'IA',
-            'Kansas': 'KS', 'Kentucky': 'KY', 'Louisiana': 'LA', 'Maine': 'ME', 'Maryland': 'MD',
-            'Massachusetts': 'MA', 'Michigan': 'MI', 'Minnesota': 'MN', 'Mississippi': 'MS', 'Missouri': 'MO',
-            'Montana': 'MT', 'Nebraska': 'NE', 'Nevada': 'NV', 'New Hampshire': 'NH', 'New Jersey': 'NJ',
-            'New Mexico': 'NM', 'New York': 'NY', 'North Carolina': 'NC', 'North Dakota': 'ND', 'Ohio': 'OH',
-            'Oklahoma': 'OK', 'Oregon': 'OR', 'Pennsylvania': 'PA', 'Rhode Island': 'RI', 'South Carolina': 'SC',
-            'South Dakota': 'SD', 'Tennessee': 'TN', 'Texas': 'TX', 'Utah': 'UT', 'Vermont': 'VT',
-            'Virginia': 'VA', 'Washington': 'WA', 'West Virginia': 'WV', 'Wisconsin': 'WI', 'Wyoming': 'WY'
-        };
-
         return Object.keys(statesInfo).map(stateName => ({
             name: stateName,
             status: 'not-visited',
             visitDate: null,
             notes: '',
             ...statesInfo[stateName],
-            abbreviation: stateFlags[stateName],
             userBudget: null,
             userDays: null,
             userNotes: ''
         }));
     }
 
-    // Get all trips from localStorage
-    getAllTrips() {
-        const trips = localStorage.getItem(this.storageKey);
-        return trips ? JSON.parse(trips) : [];
-    }
 
-    // Save a new trip
-    saveTrip(trip) {
-        const trips = this.getAllTrips();
-        trip.id = this.generateId();
-        trip.createdAt = new Date().toISOString();
-        trips.push(trip);
-        localStorage.setItem(this.storageKey, JSON.stringify(trips));
-        return trip;
-    }
-
-    // Update an existing trip
-    updateTrip(tripId, updatedTrip) {
-        const trips = this.getAllTrips();
-        const index = trips.findIndex(trip => trip.id === tripId);
-        if (index !== -1) {
-            trips[index] = { ...trips[index], ...updatedTrip };
-            localStorage.setItem(this.storageKey, JSON.stringify(trips));
-            return trips[index];
-        }
-        return null;
-    }
-
-    // Delete a trip
-    deleteTrip(tripId) {
-        const trips = this.getAllTrips();
-        const filteredTrips = trips.filter(trip => trip.id !== tripId);
-        localStorage.setItem(this.storageKey, JSON.stringify(filteredTrips));
-        return true;
-    }
-
-    // Get a single trip by ID
-    getTripById(tripId) {
-        const trips = this.getAllTrips();
-        return trips.find(trip => trip.id === tripId);
-    }
 
     // Generate unique ID for trips
     generateId() {
@@ -190,7 +104,7 @@ class TravelStorage {
     updateStateStatus(stateName, status, visitDate = null, notes = '') {
         const states = this.getAllStates();
         const stateIndex = states.findIndex(state => state.name === stateName);
-        
+
         if (stateIndex !== -1) {
             states[stateIndex].status = status;
             states[stateIndex].visitDate = visitDate;
@@ -207,27 +121,7 @@ class TravelStorage {
         return states.find(state => state.name === stateName);
     }
 
-    // Calculate statistics
-    getStatistics() {
-        const trips = this.getAllTrips();
-        const totalTrips = trips.length;
-        const countries = [...new Set(trips.map(trip => trip.country))];
-        const totalCountries = countries.length;
-        
-        const totalDays = trips.reduce((total, trip) => {
-            const startDate = new Date(trip.startDate);
-            const endDate = new Date(trip.endDate);
-            const diffTime = Math.abs(endDate - startDate);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-            return total + diffDays;
-        }, 0);
 
-        return {
-            totalTrips,
-            totalCountries,
-            totalDays
-        };
-    }
 
     // Calculate US states statistics
     getStatesStatistics() {
@@ -244,10 +138,7 @@ class TravelStorage {
         };
     }
 
-    // Clear all data (for testing purposes)
-    clearAllData() {
-        localStorage.removeItem(this.storageKey);
-    }
+
 
     // Home state management
     getHomeState() {
@@ -318,21 +209,21 @@ class TravelStorage {
         const coords = this.getStateCoordinates();
         const coord1 = coords[state1];
         const coord2 = coords[state2];
-        
+
         if (!coord1 || !coord2) return 0;
 
         const R = 3959; // Earth's radius in miles
         const dLat = this.toRad(coord2.lat - coord1.lat);
         const dLng = this.toRad(coord2.lng - coord1.lng);
-        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(this.toRad(coord1.lat)) * Math.cos(this.toRad(coord2.lat)) *
-                Math.sin(dLng/2) * Math.sin(dLng/2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(this.toRad(coord1.lat)) * Math.cos(this.toRad(coord2.lat)) *
+            Math.sin(dLng / 2) * Math.sin(dLng / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return Math.round(R * c);
     }
 
     toRad(deg) {
-        return deg * (Math.PI/180);
+        return deg * (Math.PI / 180);
     }
 
     getBestTransport(distance) {

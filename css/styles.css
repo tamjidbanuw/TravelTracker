@@ -8,7 +8,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
     color: #333;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #2c3e50;
     min-height: 100vh;
 }
 
@@ -70,16 +70,37 @@ header p {
     font-weight: 500;
 }
 
+/* Statistics Cards - Green/Yellow/Orange Theme */
+.stat-card.visited {
+    background: white;
+    border-left: 3px solid #28a745;
+}
+
 .stat-card.visited h3 {
     color: #28a745;
+}
+
+.stat-card.planned {
+    background: white;
+    border-left: 3px solid #ffc107;
 }
 
 .stat-card.planned h3 {
     color: #ffc107;
 }
 
+.stat-card.not-visited {
+    background: white;
+    border-left: 3px solid #fd7e14;
+}
+
 .stat-card.not-visited h3 {
-    color: #dc3545;
+    color: #fd7e14;
+}
+
+.stat-card.total {
+    background: white;
+    border-left: 3px solid #667eea;
 }
 
 .stat-card.total h3 {
@@ -110,12 +131,79 @@ header p {
     opacity: 1;
 }
 
-.stat-card.active-filter {
+/* Active Filter - Color-Specific Outlines and Checkmarks */
+.stat-card.active-filter.visited {
+    border: 3px solid #28a745;
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+}
+
+.stat-card.active-filter.visited::after {
+    content: '✓';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #28a745;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.stat-card.active-filter.planned {
+    border: 3px solid #ffc107;
+    box-shadow: 0 8px 25px rgba(255, 193, 7, 0.3);
+}
+
+.stat-card.active-filter.planned::after {
+    content: '✓';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #ffc107;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.stat-card.active-filter.not-visited {
+    border: 3px solid #fd7e14;
+    box-shadow: 0 8px 25px rgba(253, 126, 20, 0.3);
+}
+
+.stat-card.active-filter.not-visited::after {
+    content: '✓';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #fd7e14;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.stat-card.active-filter.total {
     border: 3px solid #667eea;
     box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
 }
 
-.stat-card.active-filter::after {
+.stat-card.active-filter.total::after {
     content: '✓';
     position: absolute;
     top: 10px;
@@ -130,6 +218,23 @@ header p {
     justify-content: center;
     font-size: 12px;
     font-weight: bold;
+}
+
+/* Fill Color Only for Active Statistics Cards */
+.stat-card.active-filter.visited {
+    background: linear-gradient(135deg, #d4edda 0%, #ffffff 100%);
+}
+
+.stat-card.active-filter.planned {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffffff 100%);
+}
+
+.stat-card.active-filter.not-visited {
+    background: linear-gradient(135deg, #ffe8d4 0%, #ffffff 100%);
+}
+
+.stat-card.active-filter.total {
+    background: linear-gradient(135deg, #e8ebff 0%, #ffffff 100%);
 }
 
 .add-trip-section {
@@ -545,7 +650,7 @@ ols Section */
 .state-card {
     background: white;
     border-radius: 12px;
-    padding: 15px;
+    padding: 25px 15px 15px 15px;
     text-align: center;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     transition: all 0.3s ease;
@@ -586,12 +691,13 @@ ols Section */
 
 .state-card .status {
     position: absolute;
-    top: 8px;
-    right: 8px;
+    top: 5px;
+    right: 5px;
     padding: 4px 8px;
     border-radius: 10px;
     font-size: 0.7rem;
     font-weight: 500;
+    z-index: 1;
 }
 
 /* Detailed Modal Styles */
