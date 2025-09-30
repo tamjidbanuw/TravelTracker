@@ -1,109 +1,261 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Travel Tracker</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
     <div class="container">
         <header>
-            <h1>�🇸 aUSA Travel Tracker</h1>
+            <h1>🇺🇸 USA Travel Tracker</h1>
             <p>Explore the beautiful states of America</p>
         </header>
 
         <main>
             <section class="stats-section">
                 <div class="stats-grid">
-                    <div class="stat-card visited">
+                    <div class="stat-card visited clickable" data-filter="visited">
                         <h3 id="states-visited">0</h3>
                         <p>States Visited</p>
+                        <small>Click to filter</small>
                     </div>
-                    <div class="stat-card planned">
+                    <div class="stat-card planned clickable" data-filter="plan-to-visit">
                         <h3 id="states-planned">0</h3>
                         <p>Plan to Visit</p>
+                        <small>Click to filter</small>
                     </div>
-                    <div class="stat-card not-visited">
+                    <div class="stat-card not-visited clickable" data-filter="not-visited">
                         <h3 id="states-not-visited">50</h3>
                         <p>Not Visited</p>
+                        <small>Click to filter</small>
                     </div>
-                    <div class="stat-card total">
+                    <div class="stat-card total clickable" data-filter="all">
                         <h3>50</h3>
                         <p>Total States</p>
+                        <small>Click to show all</small>
                     </div>
                 </div>
             </section>
 
-            <section class="navigation-section">
+            <!-- <section class="navigation-section">
                 <div class="nav-buttons">
                     <button id="states-tab" class="nav-btn active">US States</button>
                     <button id="trips-tab" class="nav-btn">International Trips</button>
                 </div>
-            </section>
+            </section> -->
 
             <section id="states-section" class="content-section">
-                <div class="filter-section">
-                    <label for="status-filter">Filter by status:</label>
-                    <select id="status-filter">
-                        <option value="all">All States</option>
-                        <option value="visited">Visited</option>
-                        <option value="plan-to-visit">Plan to Visit</option>
-                        <option value="not-visited">Not Visited</option>
-                    </select>
+                <div class="controls-section">
+                    <div class="home-state-setup">
+                        <label for="home-state-select">Your Home State:</label>
+                        <select id="home-state-select">
+                            <option value="">Select your home state...</option>
+                        </select>
+                    </div>
+                    <div class="filter-info">
+                        <p>💡 Click on the statistics above to filter states by status</p>
+                    </div>
                 </div>
                 <div id="states-container" class="states-grid">
                     <!-- States will be dynamically added here -->
                 </div>
             </section>
 
-            <section id="trips-section" class="content-section" style="display: none;">
+            <!-- <section id="trips-section" class="content-section" style="display: none;">
                 <div class="add-trip-section">
                     <button id="add-trip-btn" class="btn-primary">+ Add New Trip</button>
                 </div>
                 <h2>Your International Trips</h2>
                 <div id="trips-container" class="trips-grid">
                     <!-- Trips will be dynamically added here -->
-                </div>
-            </section>
-        </main>
+    </div>
+    </section> -->
+    </main>
 
-        <!-- Modal for updating state status -->
-        <div id="state-modal" class="modal">
-            <div class="modal-content">
-                <span class="close state-close">&times;</span>
-                <h2 id="state-modal-title">Update State</h2>
-                <form id="state-form">
-                    <div class="form-group">
-                        <label for="state-name">State:</label>
-                        <input type="text" id="state-name" readonly>
+    <!-- Modal for updating state status -->
+    <div id="state-modal" class="modal">
+        <div class="modal-content">
+            <span class="close state-close">&times;</span>
+            <h2 id="state-modal-title">Update State</h2>
+            <form id="state-form">
+                <div class="form-group">
+                    <label for="state-name">State:</label>
+                    <input type="text" id="state-name" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="state-status">Status:</label>
+                    <select id="state-status" required>
+                        <option value="not-visited">Not Visited</option>
+                        <option value="plan-to-visit">Plan to Visit</option>
+                        <option value="visited">Visited</option>
+                    </select>
+                </div>
+                <div class="form-group" id="visit-date-group" style="display: none;">
+                    <label for="visit-date">Visit Date:</label>
+                    <input type="date" id="visit-date">
+                </div>
+                <div class="form-group">
+                    <label for="state-notes">Notes:</label>
+                    <textarea id="state-notes" rows="3" placeholder="Add your thoughts about this state..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Update State</button>
+                    <button type="button" id="state-cancel-btn" class="btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Detailed State Modal -->
+    <div id="state-detail-modal" class="modal detail-modal">
+        <div class="modal-content detail-content">
+            <span class="close detail-close">&times;</span>
+            <div class="state-detail-header">
+                <h2 id="detail-state-name">State Name</h2>
+                <div class="state-nickname" id="detail-state-nickname">Nickname</div>
+                <div class="state-status-badge" id="detail-status-badge">Not Visited</div>
+            </div>
+
+            <div class="detail-tabs">
+                <button class="detail-tab active" data-tab="overview">Overview</button>
+                <button class="detail-tab" data-tab="planning">Trip Planning</button>
+                <button class="detail-tab" data-tab="budget">Budget</button>
+                <button class="detail-tab" data-tab="personal">My Notes</button>
+            </div>
+
+            <div class="detail-content-area">
+                <div id="overview-tab" class="tab-content active">
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <h4>📍 Capital</h4>
+                            <p id="detail-capital">-</p>
+                        </div>
+                        <div class="info-card">
+                            <h4>🏙️ Best Cities</h4>
+                            <ul id="detail-cities"></ul>
+                        </div>
+                        <div class="info-card">
+                            <h4>🎯 Famous Places</h4>
+                            <ul id="detail-places"></ul>
+                        </div>
+                        <div class="info-card">
+                            <h4>📏 Distance from Home</h4>
+                            <p id="detail-distance">-</p>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="state-status">Status:</label>
-                        <select id="state-status" required>
-                            <option value="not-visited">Not Visited</option>
-                            <option value="plan-to-visit">Plan to Visit</option>
-                            <option value="visited">Visited</option>
-                        </select>
+                </div>
+
+                <div id="planning-tab" class="tab-content">
+                    <div class="planning-grid">
+                        <div class="planning-card">
+                            <h4>⏱️ Recommended Duration</h4>
+                            <p id="detail-recommended-days">- days</p>
+                        </div>
+                        <div class="planning-card">
+                            <h4>🚗 Best Transport</h4>
+                            <p id="detail-transport">-</p>
+                        </div>
+                        <div class="planning-card">
+                            <h4>📅 Your Planned Days</h4>
+                            <input type="number" id="user-planned-days" min="1" max="30" placeholder="How many days?">
+                        </div>
+                        <div class="planning-card">
+                            <h4>📆 Visit Date</h4>
+                            <input type="date" id="user-visit-date">
+                        </div>
                     </div>
-                    <div class="form-group" id="visit-date-group" style="display: none;">
-                        <label for="visit-date">Visit Date:</label>
-                        <input type="date" id="visit-date">
+                </div>
+
+                <div id="budget-tab" class="tab-content">
+                    <div class="budget-grid">
+                        <div class="budget-card">
+                            <h4>💰 Estimated Budget</h4>
+                            <p id="detail-estimated-budget">$-</p>
+                            <small>Based on average costs</small>
+                        </div>
+                        <div class="budget-card">
+                            <h4>🎯 Your Budget</h4>
+                            <input type="number" id="user-budget" placeholder="Enter your budget">
+                        </div>
+                        <div class="budget-breakdown">
+                            <h4>Budget Breakdown (Estimated)</h4>
+                            <div class="breakdown-item">
+                                <span>Accommodation (40%)</span>
+                                <span id="accommodation-cost">$-</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span>Food (30%)</span>
+                                <span id="food-cost">$-</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span>Activities (20%)</span>
+                                <span id="activities-cost">$-</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span>Transport (10%)</span>
+                                <span id="transport-cost">$-</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="state-notes">Notes:</label>
-                        <textarea id="state-notes" rows="3" placeholder="Add your thoughts about this state..."></textarea>
+                </div>
+
+                <div id="personal-tab" class="tab-content">
+                    <div class="personal-section">
+                        <div class="status-update">
+                            <h4>Update Status</h4>
+                            <select id="detail-status-select">
+                                <option value="not-visited">Not Visited</option>
+                                <option value="plan-to-visit">Plan to Visit</option>
+                                <option value="visited">Visited</option>
+                            </select>
+                        </div>
+                        <div class="notes-section">
+                            <h4>My Notes & Memories</h4>
+                            <textarea id="detail-user-notes" rows="6"
+                                placeholder="Add your personal notes, memories, or plans for this state..."></textarea>
+                        </div>
                     </div>
-                    <div class="form-actions">
-                        <button type="submit" class="btn-primary">Update State</button>
-                        <button type="button" id="state-cancel-btn" class="btn-secondary">Cancel</button>
-                    </div>
-                </form>
+                </div>
+            </div>
+
+            <div class="detail-actions">
+                <button id="save-state-details" class="btn-primary">Save Changes</button>
+                <button id="close-detail-modal" class="btn-secondary">Close</button>
             </div>
         </div>
+    </div>
 
-        <!-- Modal for adding/editing trips -->
-        <div id="trip-modal" class="modal">
+    <!-- Confirmation Modal -->
+    <div id="confirmation-modal" class="modal">
+        <div class="modal-content confirmation-content">
+            <h3 id="confirmation-title">Confirm Action</h3>
+            <p id="confirmation-message">Are you sure?</p>
+            <div class="confirmation-actions">
+                <button id="confirm-yes" class="btn-primary">Yes</button>
+                <button id="confirm-no" class="btn-secondary">No</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reset Choice Modal -->
+    <div id="reset-choice-modal" class="modal">
+        <div class="modal-content confirmation-content">
+            <h3 id="reset-choice-title">Choose Action</h3>
+            <p id="reset-choice-message">What would you like to do?</p>
+            <div class="reset-choice-actions">
+                <button id="reset-choice-reset" class="btn-warning">Reset to Not Visited</button>
+                <button id="reset-choice-keep" class="btn-success">Keep as Visited</button>
+                <button id="reset-choice-cancel" class="btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for adding/editing trips - COMMENTED OUT FOR NOW -->
+    <!-- <div id="trip-modal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <h2 id="modal-title">Add New Trip</h2>
@@ -113,61 +265,8 @@
                         <input type="text" id="destination" required>
                     </div>
                     <div class="form-group">
-                        <label for="state">State:</label>
-                        <select id="state" required>
-                            <option value="">Select a state...</option>
-                            <option value="Alabama">Alabama</option>
-                            <option value="Alaska">Alaska</option>
-                            <option value="Arizona">Arizona</option>
-                            <option value="Arkansas">Arkansas</option>
-                            <option value="California">California</option>
-                            <option value="Colorado">Colorado</option>
-                            <option value="Connecticut">Connecticut</option>
-                            <option value="Delaware">Delaware</option>
-                            <option value="Florida">Florida</option>
-                            <option value="Georgia">Georgia</option>
-                            <option value="Hawaii">Hawaii</option>
-                            <option value="Idaho">Idaho</option>
-                            <option value="Illinois">Illinois</option>
-                            <option value="Indiana">Indiana</option>
-                            <option value="Iowa">Iowa</option>
-                            <option value="Kansas">Kansas</option>
-                            <option value="Kentucky">Kentucky</option>
-                            <option value="Louisiana">Louisiana</option>
-                            <option value="Maine">Maine</option>
-                            <option value="Maryland">Maryland</option>
-                            <option value="Massachusetts">Massachusetts</option>
-                            <option value="Michigan">Michigan</option>
-                            <option value="Minnesota">Minnesota</option>
-                            <option value="Mississippi">Mississippi</option>
-                            <option value="Missouri">Missouri</option>
-                            <option value="Montana">Montana</option>
-                            <option value="Nebraska">Nebraska</option>
-                            <option value="Nevada">Nevada</option>
-                            <option value="New Hampshire">New Hampshire</option>
-                            <option value="New Jersey">New Jersey</option>
-                            <option value="New Mexico">New Mexico</option>
-                            <option value="New York">New York</option>
-                            <option value="North Carolina">North Carolina</option>
-                            <option value="North Dakota">North Dakota</option>
-                            <option value="Ohio">Ohio</option>
-                            <option value="Oklahoma">Oklahoma</option>
-                            <option value="Oregon">Oregon</option>
-                            <option value="Pennsylvania">Pennsylvania</option>
-                            <option value="Rhode Island">Rhode Island</option>
-                            <option value="South Carolina">South Carolina</option>
-                            <option value="South Dakota">South Dakota</option>
-                            <option value="Tennessee">Tennessee</option>
-                            <option value="Texas">Texas</option>
-                            <option value="Utah">Utah</option>
-                            <option value="Vermont">Vermont</option>
-                            <option value="Virginia">Virginia</option>
-                            <option value="Washington">Washington</option>
-                            <option value="West Virginia">West Virginia</option>
-                            <option value="Wisconsin">Wisconsin</option>
-                            <option value="Wyoming">Wyoming</option>
-                            <option value="Washington D.C.">Washington D.C.</option>
-                        </select>
+                        <label for="country">Country:</label>
+                        <input type="text" id="country" required>
                     </div>
                     <div class="form-group">
                         <label for="start-date">Start Date:</label>
@@ -187,10 +286,11 @@
                     </div>
                 </form>
             </div>
-        </div>
+        </div> -->
     </div>
 
     <script src="js/storage.js"></script>
     <script src="js/app.js"></script>
 </body>
+
 </html>

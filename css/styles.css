@@ -86,6 +86,52 @@ header p {
     color: #667eea;
 }
 
+/* Clickable stat cards */
+.stat-card.clickable {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.stat-card.clickable:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.stat-card.clickable small {
+    color: #888;
+    font-size: 0.75rem;
+    margin-top: 5px;
+    display: block;
+    opacity: 0.7;
+}
+
+.stat-card.clickable:hover small {
+    opacity: 1;
+}
+
+.stat-card.active-filter {
+    border: 3px solid #667eea;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.stat-card.active-filter::after {
+    content: '✓';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #667eea;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
 .add-trip-section {
     text-align: center;
     margin-bottom: 40px;
@@ -354,25 +400,21 @@ header p {
     background: #f8f9fa;
 }
 
-/* Filter Section */
-.filter-section {
+/* Filter Info */
+.filter-info {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
-.filter-section label {
+.filter-info p {
     color: white;
-    font-weight: 500;
-    margin-right: 10px;
-}
-
-.filter-section select {
-    padding: 8px 16px;
-    border: none;
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin: 0;
+    padding: 10px 20px;
+    background: rgba(255,255,255,0.1);
     border-radius: 20px;
-    background: white;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    cursor: pointer;
+    display: inline-block;
 }
 
 /* States Grid */
@@ -467,4 +509,600 @@ header p {
     .nav-btn {
         flex: 1;
     }
+}/* Contr
+ols Section */
+.controls-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.home-state-setup {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.home-state-setup label {
+    color: white;
+    font-weight: 500;
+}
+
+.home-state-setup select {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 20px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    cursor: pointer;
+    min-width: 200px;
+}
+
+/* Compact State Cards */
+.state-card {
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.state-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.state-card h3 {
+    margin-bottom: 8px;
+    font-size: 1rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.state-card .distance-info {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.state-card .transport-info {
+    font-size: 0.8rem;
+    color: #888;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.state-card .status {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 4px 8px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+/* Detailed Modal Styles */
+.detail-modal {
+    z-index: 1001;
+}
+
+.detail-content {
+    max-width: 800px;
+    width: 95%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 0;
+}
+
+.state-detail-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    text-align: center;
+    position: relative;
+}
+
+.state-detail-header h2 {
+    margin: 0 0 10px 0;
+    font-size: 2rem;
+}
+
+.state-nickname {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin-bottom: 15px;
+}
+
+.state-status-badge {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.2);
+    font-weight: 500;
+}
+
+.detail-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.detail-close:hover {
+    opacity: 0.7;
+}
+
+/* Detail Tabs */
+.detail-tabs {
+    display: flex;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.detail-tab {
+    flex: 1;
+    padding: 15px 20px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-weight: 500;
+    color: #666;
+    transition: all 0.3s ease;
+}
+
+.detail-tab.active {
+    background: white;
+    color: #667eea;
+    border-bottom: 3px solid #667eea;
+}
+
+.detail-tab:hover:not(.active) {
+    background: #e9ecef;
+}
+
+/* Tab Content */
+.detail-content-area {
+    padding: 30px;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Info Grid */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.info-card {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.info-card h4 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 1rem;
+}
+
+.info-card p {
+    margin: 0;
+    color: #666;
+    font-weight: 500;
+}
+
+.info-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.info-card li {
+    padding: 2px 0;
+    color: #666;
+}
+
+/* Planning Grid */
+.planning-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.planning-card {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.planning-card h4 {
+    margin: 0 0 15px 0;
+    color: #333;
+}
+
+.planning-card input {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.planning-card input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+/* Budget Grid */
+.budget-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.budget-card {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.budget-card h4 {
+    margin: 0 0 15px 0;
+    color: #333;
+}
+
+.budget-card p {
+    margin: 0 0 5px 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #28a745;
+}
+
+.budget-card small {
+    color: #666;
+}
+
+.budget-breakdown {
+    grid-column: 1 / -1;
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.budget-breakdown h4 {
+    margin: 0 0 15px 0;
+    color: #333;
+}
+
+.breakdown-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.breakdown-item:last-child {
+    border-bottom: none;
+}
+
+/* Personal Section */
+.personal-section {
+    display: grid;
+    gap: 30px;
+}
+
+.status-update select {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.notes-section textarea {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 1rem;
+    resize: vertical;
+}
+
+.notes-section textarea:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+/* Detail Actions */
+.detail-actions {
+    padding: 20px 30px;
+    background: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+}
+
+@media (max-width: 768px) {
+    .controls-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .home-state-setup {
+        justify-content: center;
+    }
+    
+    .detail-content {
+        width: 98%;
+        margin: 1% auto;
+    }
+    
+    .detail-tabs {
+        flex-wrap: wrap;
+    }
+    
+    .detail-tab {
+        flex: 1 1 50%;
+        min-width: 120px;
+    }
+    
+    .info-grid,
+    .planning-grid,
+    .budget-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .detail-actions {
+        flex-direction: column;
+    }
+}/* Home 
+State Special Styling */
+.state-card.home-state {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: 3px solid #ffd700;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.state-card.home-state::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transform: rotate(45deg);
+    animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+.state-card.home-state h3 {
+    color: white;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+.state-card.home-state .distance-info {
+    color: #ffd700;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.state-card.home-state .transport-info {
+    color: rgba(255,255,255,0.9);
+    font-weight: 500;
+}
+
+.state-card.home-state .status {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+.home-badge {
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    background: #ffd700;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    z-index: 2;
+}
+
+.state-card.home-state:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.5);
+    border-color: #fff;
+}
+
+/* Make home state stand out more */
+.state-card.home-state {
+    transform: scale(1.05);
+    z-index: 1;
+}
+
+.state-card.home-state:hover {
+    transform: scale(1.05) translateY(-5px);
+}/
+* Confirmation Modal */
+.confirmation-content {
+    max-width: 400px;
+    text-align: center;
+    padding: 30px;
+}
+
+.confirmation-content h3 {
+    margin: 0 0 20px 0;
+    color: #333;
+    font-size: 1.3rem;
+}
+
+.confirmation-content p {
+    margin: 0 0 30px 0;
+    color: #666;
+    line-height: 1.5;
+    white-space: pre-line;
+}
+
+.confirmation-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.confirmation-actions button {
+    min-width: 80px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.confirmation-actions .btn-primary {
+    background: #667eea;
+    color: white;
+}
+
+.confirmation-actions .btn-primary:hover {
+    background: #5a6fd8;
+    transform: translateY(-1px);
+}
+
+.confirmation-actions .btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.confirmation-actions .btn-secondary:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+}/* Reset 
+Choice Modal */
+.reset-choice-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+}
+
+.reset-choice-actions button {
+    min-width: 180px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-warning {
+    background: #ffc107;
+    color: #212529;
+}
+
+.btn-warning:hover {
+    background: #e0a800;
+    transform: translateY(-1px);
+}
+
+.btn-success {
+    background: #28a745;
+    color: white;
+}
+
+.btn-success:hover {
+    background: #218838;
+    transform: translateY(-1px);
+}
+
+@media (min-width: 480px) {
+    .reset-choice-actions {
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .reset-choice-actions button {
+        min-width: 140px;
+    }
+}/* 
+State Card Color Coding */
+.state-card.status-visited {
+    border-left: 5px solid #28a745;
+    background: linear-gradient(135deg, #d4edda 0%, #ffffff 100%);
+}
+
+.state-card.status-plan-to-visit {
+    border-left: 5px solid #ffc107;
+    background: linear-gradient(135deg, #fff3cd 0%, #ffffff 100%);
+}
+
+.state-card.status-not-visited {
+    border-left: 5px solid #fd7e14;
+    background: linear-gradient(135deg, #ffe8d4 0%, #ffffff 100%);
+}
+
+/* Enhanced hover effects for colored cards */
+.state-card.status-visited:hover {
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.2);
+    border-left-color: #218838;
+}
+
+.state-card.status-plan-to-visit:hover {
+    box-shadow: 0 6px 20px rgba(255, 193, 7, 0.2);
+    border-left-color: #e0a800;
+}
+
+.state-card.status-not-visited:hover {
+    box-shadow: 0 6px 20px rgba(253, 126, 20, 0.2);
+    border-left-color: #e8590c;
+}
+
+/* Ensure home state styling takes precedence */
+.state-card.home-state {
+    border-left: none !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
 }
