@@ -27,12 +27,775 @@ header {
 header h1 {
     font-size: 3rem;
     margin-bottom: 10px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 header p {
     font-size: 1.2rem;
     opacity: 0.9;
+}
+
+/* Progress Overview Section */
+.progress-overview {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.progress-header h2 {
+    color: #333;
+    margin: 0;
+    font-size: 1.8rem;
+}
+
+.completion-percentage {
+    text-align: center;
+}
+
+.completion-percentage span {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #28a745;
+    line-height: 1;
+}
+
+.completion-percentage small {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* Progress Bar */
+.progress-bar-container {
+    margin-bottom: 25px;
+}
+
+.progress-bar {
+    position: relative;
+    height: 40px;
+    background: #f8f9fa;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 2px solid #e9ecef;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #28a745 0%, #ffc107 var(--visited-width, 0%), #fd7e14 100%);
+    border-radius: 18px;
+    transition: width 0.8s ease;
+    position: relative;
+    width: 0%;
+}
+
+.progress-labels {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    padding: 0 15px;
+    pointer-events: none;
+}
+
+.progress-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.progress-label.visited {
+    color: #155724;
+}
+
+.progress-label.planned {
+    color: #856404;
+}
+
+.progress-label.remaining {
+    color: #721c24;
+}
+
+/* Progress Stats */
+.progress-stats {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+}
+
+.progress-stat {
+    flex: 1;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.progress-stat:nth-child(1) .stat-number {
+    color: #28a745;
+}
+
+.progress-stat:nth-child(2) .stat-number {
+    color: #ffc107;
+}
+
+.progress-stat:nth-child(3) .stat-number {
+    color: #fd7e14;
+}
+
+.stat-label {
+    color: #666;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Analytics Section */
+.analytics-section {
+    margin-bottom: 40px;
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.analytics-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 30px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.analytics-header:hover {
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+}
+
+.analytics-header h2 {
+    margin: 0;
+    font-size: 1.8rem;
+}
+
+.analytics-toggle {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.analytics-toggle:hover {
+    opacity: 0.8;
+}
+
+.toggle-icon {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+}
+
+.analytics-toggle.expanded .toggle-icon {
+    transform: rotate(180deg);
+}
+
+.analytics-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+}
+
+.analytics-content.expanded {
+    max-height: 2000px;
+    padding: 30px;
+}
+
+
+
+.analytics-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.analytics-card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.analytics-card:hover {
+    transform: translateY(-3px);
+}
+
+.analytics-card h3 {
+    color: #333;
+    margin: 0 0 20px 0;
+    font-size: 1.3rem;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.analytics-card>div:last-child {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Custom scrollbar for analytics cards */
+.analytics-card>div:last-child::-webkit-scrollbar {
+    width: 4px;
+}
+
+.analytics-card>div:last-child::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 2px;
+}
+
+.analytics-card>div:last-child::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 2px;
+}
+
+.analytics-card>div:last-child::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Custom scrollbar for analytics cards */
+.analytics-card>div:last-child::-webkit-scrollbar {
+    width: 4px;
+}
+
+.analytics-card>div:last-child::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 2px;
+}
+
+.analytics-card>div:last-child::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 2px;
+}
+
+.analytics-card>div:last-child::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+
+
+/* Regional Progress */
+.regional-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.region-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border-left: 4px solid #667eea;
+}
+
+.region-item.completed {
+    border-left-color: #28a745;
+    background: linear-gradient(135deg, #d4edda 0%, #f8f9fa 100%);
+}
+
+.region-name {
+    font-weight: 600;
+    color: #333;
+}
+
+.region-progress {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.region-count {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.region-badge {
+    background: #667eea;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.region-item.completed .region-badge {
+    background: #28a745;
+}
+
+/* Travel Personality */
+.personality-container {
+    text-align: center;
+    padding: 5px;
+}
+
+.personality-type {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #667eea;
+    margin-bottom: 8px;
+}
+
+.personality-description {
+    color: #666;
+    line-height: 1.4;
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+}
+
+.personality-traits {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+}
+
+.trait-tag {
+    background: #e8ebff;
+    color: #667eea;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Achievements */
+.achievements-container {
+    display: grid !important;
+    grid-template-columns: repeat(6, 1fr) !important;
+    gap: 8px !important;
+    padding: 0;
+    justify-items: center;
+    align-items: center;
+    width: 100% !important;
+}
+
+.achievement-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.achievement-badge.unlocked {
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    border: 2px solid #f39c12;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+}
+
+.achievement-badge.locked {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    opacity: 0.5;
+}
+
+.achievement-badge:hover {
+    transform: scale(1.1);
+}
+
+.achievement-badge.unlocked:hover {
+    box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
+}
+
+.achievement-icon {
+    font-size: 1.8rem !important;
+}
+
+/* Themed achievement badges with custom backgrounds and colors */
+
+/* Desert Explorer Badge - Sandy desert theme */
+.achievement-badge.unlocked[data-tooltip*="Desert Explorer"] {
+    background: linear-gradient(135deg, #f4a261 0%, #e76f51 50%, #e9c46a 100%);
+    border: 2px solid #264653;
+    box-shadow: 0 4px 12px rgba(244, 162, 97, 0.4);
+}
+
+.achievement-badge.unlocked[data-tooltip*="Desert Explorer"] .achievement-icon {
+    color: #264653;
+    text-shadow: 0 0 8px rgba(233, 196, 106, 0.8);
+}
+
+/* Beach Lover Badge - Ocean and sand theme */
+.achievement-badge.unlocked[data-tooltip*="Beach Lover"] {
+    background: linear-gradient(135deg, #87ceeb 0%, #20b2aa 50%, #f0e68c 100%);
+    border: 2px solid #4682b4;
+    box-shadow: 0 4px 12px rgba(135, 206, 235, 0.4);
+}
+
+.achievement-badge.unlocked[data-tooltip*="Beach Lover"] .achievement-icon {
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(70, 130, 180, 0.8);
+}
+
+/* Mountain Climber Badge - Rocky mountain theme */
+.achievement-badge.unlocked[data-tooltip*="Mountain Climber"] {
+    background: linear-gradient(135deg, #8b7355 0%, #d2b48c 50%, #ffffff 100%);
+    border: 2px solid #696969;
+    box-shadow: 0 4px 12px rgba(139, 115, 85, 0.4);
+}
+
+.achievement-badge.unlocked[data-tooltip*="Mountain Climber"] .achievement-icon {
+    color: #2f4f4f;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+}
+
+/* Coast to Coast Badge - Ocean waves theme */
+.achievement-badge.unlocked[data-tooltip*="Coast to Coast"] {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #06b6d4 100%);
+    border: 2px solid #0ea5e9;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.achievement-badge.unlocked[data-tooltip*="Coast to Coast"] .achievement-icon {
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(14, 165, 233, 0.8);
+}
+
+/* Speed Runner Badge - Lightning/energy theme */
+.achievement-badge.unlocked[data-tooltip*="Speed Runner"] {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ffd93d 50%, #6bcf7f 100%);
+    border: 2px solid #ff8c42;
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+}
+
+/* Region Master Badge - Purple royal theme */
+.achievement-badge.unlocked[data-tooltip*="Region Master"] {
+    background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 50%, #c4b5fd 100%);
+    border: 2px solid #7c3aed;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+}
+
+/* Memory Keeper Badge - Warm book/memory theme */
+.achievement-badge.unlocked[data-tooltip*="Memory Keeper"] {
+    background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #fde047 100%);
+    border: 2px solid #d97706;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+}
+
+/* Travel Royalty Badge - Royal purple and gold */
+.achievement-badge.unlocked[data-tooltip*="Travel Royalty"] {
+    background: linear-gradient(135deg, #7c2d12 0%, #dc2626 50%, #fbbf24 100%);
+    border: 2px solid #991b1b;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+}
+
+/* Adventurer Badge - Trophy gold theme */
+.achievement-badge.unlocked[data-tooltip*="Adventurer"] {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+    border: 2px solid #b45309;
+    box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
+}
+
+/* First Steps Badge - Target/beginning theme */
+.achievement-badge.unlocked[data-tooltip*="First Steps"] {
+    background: linear-gradient(135deg, #ef4444 0%, #f97316 50%, #eab308 100%);
+    border: 2px solid #dc2626;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+/* Getting Started Badge - Bright star theme */
+.achievement-badge.unlocked[data-tooltip*="Getting Started"] {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+    border: 2px solid #b45309;
+    box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
+}
+
+/* Explorer Badge - Classic star theme */
+.achievement-badge.unlocked[data-tooltip*="Explorer"] {
+    background: linear-gradient(135deg, #facc15 0%, #eab308 50%, #ca8a04 100%);
+    border: 2px solid #a16207;
+    box-shadow: 0 4px 12px rgba(250, 204, 21, 0.4);
+}
+
+/* Rising Star Badge - Rocket launch theme */
+.achievement-badge.unlocked[data-tooltip*="Rising Star"] {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 50%, #1e40af 100%);
+    border: 2px solid #1e3a8a;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+/* Veteran Traveler Badge - Military medal theme */
+.achievement-badge.unlocked[data-tooltip*="Veteran Traveler"] {
+    background: linear-gradient(135deg, #059669 0%, #047857 50%, #065f46 100%);
+    border: 2px solid #064e3b;
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4);
+}
+
+/* Diamond Explorer Badge - Diamond/crystal theme */
+.achievement-badge.unlocked[data-tooltip*="Diamond Explorer"] {
+    background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 50%, #a5b4fc 100%);
+    border: 2px solid #6366f1;
+    box-shadow: 0 4px 12px rgba(224, 231, 255, 0.4);
+}
+
+/* Elite Traveler Badge - Sparkles/premium theme */
+.achievement-badge.unlocked[data-tooltip*="Elite Traveler"] {
+    background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 50%, #d8b4fe 100%);
+    border: 2px solid #a855f7;
+    box-shadow: 0 4px 12px rgba(243, 232, 255, 0.4);
+}
+
+/* Legend Badge - Fire/legendary theme */
+.achievement-badge.unlocked[data-tooltip*="Legend"] {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 50%, #991b1b 100%);
+    border: 2px solid #7f1d1d;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+}
+
+/* Master of America Badge - Gold medal theme */
+.achievement-badge.unlocked[data-tooltip*="Master of America"] {
+    background: linear-gradient(135deg, #fcd34d 0%, #f59e0b 50%, #d97706 100%);
+    border: 2px solid #92400e;
+    box-shadow: 0 4px 12px rgba(252, 211, 77, 0.4);
+}
+
+/* Quarter Master Badge - Party/celebration theme */
+.achievement-badge.unlocked[data-tooltip*="Quarter Master"] {
+    background: linear-gradient(135deg, #ec4899 0%, #db2777 50%, #be185d 100%);
+    border: 2px solid #9d174d;
+    box-shadow: 0 4px 12px rgba(236, 72, 153, 0.4);
+}
+
+/* Halfway Hero Badge - Party celebration theme */
+.achievement-badge.unlocked[data-tooltip*="Halfway Hero"] {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #c2410c 100%);
+    border: 2px solid #9a3412;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
+}
+
+/* Almost There Badge - Fireworks theme */
+.achievement-badge.unlocked[data-tooltip*="Almost There"] {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 50%, #6d28d9 100%);
+    border: 2px solid #5b21b6;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+}
+
+/* Storyteller Badge - Book/writing theme */
+.achievement-badge.unlocked[data-tooltip*="Storyteller"] {
+    background: linear-gradient(135deg, #92400e 0%, #78350f 50%, #451a03 100%);
+    border: 2px solid #292524;
+    box-shadow: 0 4px 12px rgba(146, 64, 14, 0.4);
+}
+
+/* Region Champion Badge - Castle/fortress theme */
+.achievement-badge.unlocked[data-tooltip*="Region Champion"] {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 50%, #374151 100%);
+    border: 2px solid #1f2937;
+    box-shadow: 0 4px 12px rgba(107, 114, 128, 0.4);
+}
+
+/* Marathon Runner Badge - Running/endurance theme */
+.achievement-badge.unlocked[data-tooltip*="Marathon Runner"] {
+    background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
+    border: 2px solid #065f46;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+/* Default themed colors for other badges */
+.achievement-badge.unlocked .achievement-icon {
+    font-size: 1.8rem !important;
+    text-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.achievement-badge.locked .achievement-icon {
+    font-size: 1.8rem !important;
+    filter: grayscale(100%) opacity(0.6);
+}
+
+/* Simple, clean tooltip for achievement badges */
+.achievement-badge {
+    position: relative;
+}
+
+.achievement-badge:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 8px;
+    padding: 8px 12px;
+    background: black;
+    color: white;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    z-index: 1000;
+    opacity: 1;
+}
+
+.achievement-badge:hover::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 2px;
+    border: 4px solid transparent;
+    border-top-color: black;
+    z-index: 1000;
+    opacity: 1;
+}
+
+
+
+
+
+
+/* Recommendations */
+.recommendations-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.recommendation-item {
+    padding: 12px;
+    background: linear-gradient(135deg, #e8ebff 0%, #f8f9fa 100%);
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+}
+
+.recommendation-state {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.recommendation-reason {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.recommendation-distance {
+    font-size: 0.85rem;
+    color: #667eea;
+    font-weight: 500;
+}
+
+.recommendation-button {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: all 0.3s ease;
+}
+
+.recommendation-button:hover {
+    background: #5a6fd8;
+    transform: translateY(-1px);
+}
+
+/* No Data State */
+.no-data {
+    text-align: center;
+    color: #999;
+    font-style: italic;
+    padding: 40px 20px;
+    margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .analytics-grid {
+        gap: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .progress-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .progress-labels {
+        display: none;
+    }
+
+    .analytics-grid {
+        gap: 15px;
+    }
+
+    .analytics-header {
+        padding: 20px;
+    }
+
+    .analytics-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .analytics-content.expanded {
+        padding: 20px;
+    }
+
+    .progress-stats {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .analytics-card {
+        padding: 15px;
+    }
+
+    .personality-traits {
+        justify-content: center;
+    }
+
+    .trait-tag {
+        font-size: 0.8rem;
+        padding: 3px 10px;
+    }
+
+    .recommendation-button {
+        width: 100%;
+        margin-top: 8px;
+    }
 }
 
 .stats-section {
@@ -51,7 +814,7 @@ header p {
     padding: 30px;
     border-radius: 15px;
     text-align: center;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
 }
 
@@ -116,7 +879,7 @@ header p {
 
 .stat-card.clickable:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
 .stat-card.clickable small {
@@ -290,7 +1053,7 @@ header p {
     background: white;
     border-radius: 15px;
     padding: 25px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
     position: relative;
 }
@@ -329,7 +1092,8 @@ header p {
     gap: 10px;
 }
 
-.btn-edit, .btn-delete {
+.btn-edit,
+.btn-delete {
     padding: 8px 16px;
     border: none;
     border-radius: 15px;
@@ -365,7 +1129,7 @@ header p {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 .modal-content {
@@ -376,7 +1140,7 @@ header p {
     width: 90%;
     max-width: 500px;
     position: relative;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
 }
 
 .close {
@@ -448,28 +1212,30 @@ header p {
     .container {
         padding: 15px;
     }
-    
+
     header h1 {
         font-size: 2rem;
     }
-    
+
     .stats-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .trips-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .modal-content {
         margin: 10% auto;
         width: 95%;
     }
-    
+
     .form-actions {
         flex-direction: column;
     }
-}/*
+}
+
+/*
  Navigation Styles */
 .navigation-section {
     text-align: center;
@@ -481,7 +1247,7 @@ header p {
     background: white;
     border-radius: 25px;
     padding: 5px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .nav-btn {
@@ -517,7 +1283,7 @@ header p {
     opacity: 0.8;
     margin: 0;
     padding: 10px 20px;
-    background: rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 20px;
     display: inline-block;
 }
@@ -534,7 +1300,7 @@ header p {
     border-radius: 12px;
     padding: 20px;
     text-align: center;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
     cursor: pointer;
     position: relative;
@@ -542,7 +1308,7 @@ header p {
 
 .state-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 .state-card h3 {
@@ -593,8 +1359,15 @@ header p {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @media (max-width: 768px) {
@@ -602,19 +1375,21 @@ header p {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         gap: 10px;
     }
-    
+
     .state-card {
         padding: 15px;
     }
-    
+
     .nav-buttons {
         width: 100%;
     }
-    
+
     .nav-btn {
         flex: 1;
     }
-}/* Contr
+}
+
+/* Contr
 ols Section */
 .controls-section {
     display: flex;
@@ -641,7 +1416,7 @@ ols Section */
     border: none;
     border-radius: 20px;
     background: white;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     cursor: pointer;
     min-width: 200px;
 }
@@ -652,7 +1427,7 @@ ols Section */
     border-radius: 12px;
     padding: 25px 15px 15px 15px;
     text-align: center;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
     cursor: pointer;
     position: relative;
@@ -664,7 +1439,7 @@ ols Section */
 
 .state-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 .state-card h3 {
@@ -714,11 +1489,27 @@ ols Section */
 }
 
 .state-detail-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
     color: white;
     padding: 30px;
     text-align: center;
     position: relative;
+}
+
+/* Dynamic header colors based on state status - Color to white */
+.state-detail-header.status-visited {
+    background: linear-gradient(to bottom, #28a745 0%, #ffffff 100%);
+    color: #333;
+}
+
+.state-detail-header.status-plan-to-visit {
+    background: linear-gradient(to bottom, #ffc107 0%, #ffffff 100%);
+    color: #333;
+}
+
+.state-detail-header.status-not-visited {
+    background: linear-gradient(to bottom, #fd7e14 0%, #ffffff 100%);
+    color: #333;
 }
 
 .state-detail-header h2 {
@@ -736,7 +1527,7 @@ ols Section */
     display: inline-block;
     padding: 8px 16px;
     border-radius: 20px;
-    background: rgba(255,255,255,0.2);
+    background: rgba(255, 255, 255, 0.2);
     font-weight: 500;
 }
 
@@ -776,6 +1567,22 @@ ols Section */
     background: white;
     color: #667eea;
     border-bottom: 3px solid #667eea;
+}
+
+/* Dynamic tab colors based on state status */
+.state-detail-header.status-visited~.detail-tabs .detail-tab.active {
+    color: #28a745;
+    border-bottom-color: #28a745;
+}
+
+.state-detail-header.status-plan-to-visit~.detail-tabs .detail-tab.active {
+    color: #ffc107;
+    border-bottom-color: #ffc107;
+}
+
+.state-detail-header.status-not-visited~.detail-tabs .detail-tab.active {
+    color: #fd7e14;
+    border-bottom-color: #fd7e14;
 }
 
 .detail-tab:hover:not(.active) {
@@ -954,40 +1761,68 @@ ols Section */
     justify-content: flex-end;
 }
 
+/* Dynamic save button colors based on state status */
+.state-detail-header.status-visited~* .detail-actions .btn-primary {
+    background: #28a745;
+}
+
+.state-detail-header.status-visited~* .detail-actions .btn-primary:hover {
+    background: #218838;
+}
+
+.state-detail-header.status-plan-to-visit~* .detail-actions .btn-primary {
+    background: #ffc107;
+    color: #212529;
+}
+
+.state-detail-header.status-plan-to-visit~* .detail-actions .btn-primary:hover {
+    background: #e0a800;
+}
+
+.state-detail-header.status-not-visited~* .detail-actions .btn-primary {
+    background: #fd7e14;
+}
+
+.state-detail-header.status-not-visited~* .detail-actions .btn-primary:hover {
+    background: #e8590c;
+}
+
 @media (max-width: 768px) {
     .controls-section {
         flex-direction: column;
         align-items: stretch;
     }
-    
+
     .home-state-setup {
         justify-content: center;
     }
-    
+
     .detail-content {
         width: 98%;
         margin: 1% auto;
     }
-    
+
     .detail-tabs {
         flex-wrap: wrap;
     }
-    
+
     .detail-tab {
         flex: 1 1 50%;
         min-width: 120px;
     }
-    
+
     .info-grid,
     .planning-grid,
     .budget-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .detail-actions {
         flex-direction: column;
     }
-}/* Home 
+}
+
+/* Home 
 State Special Styling */
 .state-card.home-state {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -1011,14 +1846,19 @@ State Special Styling */
 }
 
 @keyframes shimmer {
-    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    0% {
+        transform: translateX(-100%) translateY(-100%) rotate(45deg);
+    }
+
+    100% {
+        transform: translateX(100%) translateY(100%) rotate(45deg);
+    }
 }
 
 .state-card.home-state h3 {
     color: white;
     font-weight: bold;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .state-card.home-state .distance-info {
@@ -1028,14 +1868,14 @@ State Special Styling */
 }
 
 .state-card.home-state .transport-info {
-    color: rgba(255,255,255,0.9);
+    color: rgba(255, 255, 255, 0.9);
     font-weight: 500;
 }
 
 .state-card.home-state .status {
-    background: rgba(255,255,255,0.2);
+    background: rgba(255, 255, 255, 0.2);
     color: white;
-    border: 1px solid rgba(255,255,255,0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .home-badge {
@@ -1050,7 +1890,7 @@ State Special Styling */
     align-items: center;
     justify-content: center;
     font-size: 16px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     z-index: 2;
 }
 
@@ -1068,9 +1908,9 @@ State Special Styling */
 
 .state-card.home-state:hover {
     transform: scale(1.05) translateY(-5px);
-}/
-* Confirmation Modal */
-.confirmation-content {
+}
+
+/ * Confirmation Modal */ .confirmation-content {
     max-width: 400px;
     text-align: center;
     padding: 30px;
@@ -1124,7 +1964,9 @@ State Special Styling */
 .confirmation-actions .btn-secondary:hover {
     background: #5a6268;
     transform: translateY(-1px);
-}/* Reset 
+}
+
+/* Reset 
 Choice Modal */
 .reset-choice-actions {
     display: flex;
@@ -1170,11 +2012,13 @@ Choice Modal */
         justify-content: center;
         flex-wrap: wrap;
     }
-    
+
     .reset-choice-actions button {
         min-width: 140px;
     }
-}/* 
+}
+
+/* 
 State Card Color Coding */
 .state-card.status-visited {
     border-left: 5px solid #28a745;

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Travel Tracker</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
@@ -16,6 +17,85 @@
         </header>
 
         <main>
+            <!-- Progress Overview Section -->
+            <section class="progress-overview">
+                <div class="progress-header">
+                    <h2>Your Travel Progress</h2>
+                    <div class="completion-percentage">
+                        <span id="completion-percent">0%</span>
+                        <small>Complete</small>
+                    </div>
+                </div>
+                
+                <div class="progress-bar-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                        <div class="progress-labels">
+                            <span class="progress-label visited">Visited</span>
+                            <span class="progress-label planned">Planned</span>
+                            <span class="progress-label remaining">Remaining</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="progress-stats">
+                    <div class="progress-stat">
+                        <div class="stat-number" id="visited-count">0</div>
+                        <div class="stat-label">Visited</div>
+                    </div>
+                    <div class="progress-stat">
+                        <div class="stat-number" id="planned-count">0</div>
+                        <div class="stat-label">Planned</div>
+                    </div>
+                    <div class="progress-stat">
+                        <div class="stat-number" id="remaining-count">50</div>
+                        <div class="stat-label">Remaining</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analytics Dashboard -->
+            <section class="analytics-section">
+                <div class="analytics-header" id="analytics-header">
+                    <h2>📊 Travel Analytics</h2>
+                    <button class="analytics-toggle" id="analytics-toggle">
+                        <span class="toggle-icon">▼</span>
+                        <span class="toggle-text">Show Details</span>
+                    </button>
+                </div>
+                <div class="analytics-content" id="analytics-content">
+                    <div class="analytics-grid">
+                        <div class="analytics-card">
+                            <h3>🗺️ Regional Explorer</h3>
+                            <div id="regional-progress" class="regional-container">
+                                <p class="no-data">Visit states to see regional progress!</p>
+                            </div>
+                        </div>
+                        
+                        <div class="analytics-card">
+                            <h3>🎯 Travel Personality</h3>
+                            <div id="travel-personality" class="personality-container">
+                                <p class="no-data">Visit states to discover your travel style!</p>
+                            </div>
+                        </div>
+                        
+                        <div class="analytics-card">
+                            <h3>🏆 Achievements</h3>
+                            <div id="achievements" class="achievements-container">
+                                <p class="no-data">Start exploring to unlock achievements!</p>
+                            </div>
+                        </div>
+                        
+                        <div class="analytics-card">
+                            <h3>🎲 Next Adventure</h3>
+                            <div id="recommendations" class="recommendations-container">
+                                <p class="no-data">Set your home state to get recommendations!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <section class="stats-section">
                 <div class="stats-grid">
                     <div class="stat-card visited clickable" data-filter="visited">

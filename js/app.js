@@ -15,6 +15,25 @@ class TravelTracker {
     }
 
     bindEvents() {
+        // Analytics toggle
+        const analyticsHeader = document.getElementById('analytics-header');
+        const analyticsToggle = document.getElementById('analytics-toggle');
+        const analyticsContent = document.getElementById('analytics-content');
+
+        analyticsHeader.addEventListener('click', () => {
+            const isExpanded = analyticsContent.classList.contains('expanded');
+            
+            if (isExpanded) {
+                analyticsContent.classList.remove('expanded');
+                analyticsToggle.classList.remove('expanded');
+                analyticsToggle.querySelector('.toggle-text').textContent = 'Show Details';
+            } else {
+                analyticsContent.classList.add('expanded');
+                analyticsToggle.classList.add('expanded');
+                analyticsToggle.querySelector('.toggle-text').textContent = 'Hide Details';
+            }
+        });
+
         // Home state selection
         const homeStateSelect = document.getElementById('home-state-select');
 
@@ -364,6 +383,10 @@ class TravelTracker {
             state.status.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
         document.getElementById('detail-status-badge').className =
             `state-status-badge ${state.status}`;
+        
+        // Update header color based on status
+        const header = document.querySelector('.state-detail-header');
+        header.className = `state-detail-header status-${state.status}`;
 
         // Update overview tab
         document.getElementById('detail-capital').textContent = state.capital;
@@ -559,6 +582,481 @@ class TravelTracker {
         document.getElementById('states-visited').textContent = stateStats.visited;
         document.getElementById('states-planned').textContent = stateStats.planToVisit;
         document.getElementById('states-not-visited').textContent = stateStats.notVisited;
+        
+        // Update progress bar and analytics
+        this.updateProgressBar(stateStats);
+        this.updateAnalytics();
+    }
+
+    updateProgressBar(stats) {
+        const totalStates = 50;
+        const visitedPercent = Math.round((stats.visited / totalStates) * 100);
+        const plannedPercent = Math.round((stats.planToVisit / totalStates) * 100);
+        const totalProgress = visitedPercent + plannedPercent;
+
+        // Update completion percentage
+        document.getElementById('completion-percent').textContent = `${visitedPercent}%`;
+        
+        // Update progress bar
+        const progressFill = document.getElementById('progress-fill');
+        progressFill.style.width = `${totalProgress}%`;
+        progressFill.style.setProperty('--visited-width', `${(visitedPercent / totalProgress) * 100}%`);
+        
+        // Update progress stats
+        document.getElementById('visited-count').textContent = stats.visited;
+        document.getElementById('planned-count').textContent = stats.planToVisit;
+        document.getElementById('remaining-count').textContent = stats.notVisited;
+    }
+
+    updateAnalytics() {
+        this.updateRegionalProgress();
+        this.updateTravelPersonality();
+        this.updateAchievements();
+        this.updateRecommendations();
+    }
+
+    updateRegionalProgress() {
+        const states = this.storage.getAllStates();
+        const homeState = this.storage.getHomeState();
+        
+        // Define US regions (US Census Bureau standard regions)
+        const regions = {
+            'Northeast': ['Connecticut', 'Maine', 'Massachusetts', 'New Hampshire', 'New Jersey', 'New York', 'Pennsylvania', 'Rhode Island', 'Vermont'],
+            'Midwest': ['Illinois', 'Indiana', 'Iowa', 'Kansas', 'Michigan', 'Minnesota', 'Missouri', 'Nebraska', 'North Dakota', 'Ohio', 'South Dakota', 'Wisconsin'],
+            'South': ['Alabama', 'Arkansas', 'Delaware', 'Florida', 'Georgia', 'Kentucky', 'Louisiana', 'Maryland', 'Mississippi', 'North Carolina', 'Oklahoma', 'South Carolina', 'Tennessee', 'Texas', 'Virginia', 'West Virginia'],
+            'West': ['Alaska', 'Arizona', 'California', 'Colorado', 'Hawaii', 'Idaho', 'Montana', 'Nevada', 'New Mexico', 'Oregon', 'Utah', 'Washington', 'Wyoming']
+        };
+
+        const container = document.getElementById('regional-progress');
+        
+        const regionHTML = Object.entries(regions).map(([regionName, regionStates]) => {
+            const visitedInRegion = regionStates.filter(stateName => {
+                const state = states.find(s => s.name === stateName);
+                return state && state.status === 'visited' && stateName !== homeState;
+            }).length;
+            
+            const totalInRegion = regionStates.length;
+            const isCompleted = visitedInRegion === totalInRegion;
+            
+            return `
+                <div class="region-item ${isCompleted ? 'completed' : ''}">
+                    <div class="region-name">${regionName}</div>
+                    <div class="region-progress">
+                        <span class="region-count">${visitedInRegion}/${totalInRegion}</span>
+                        <span class="region-badge">${Math.round((visitedInRegion / totalInRegion) * 100)}%</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        container.innerHTML = regionHTML || '<p class="no-data">Visit states to see regional progress!</p>';
+    }
+
+    updateTravelPersonality() {
+        const states = this.storage.getAllStates();
+        const homeState = this.storage.getHomeState();
+        const visitedStates = states.filter(state => state.status === 'visited' && state.name !== homeState);
+        
+        const container = document.getElementById('travel-personality');
+        
+        if (visitedStates.length === 0) {
+            container.innerHTML = '<p class="no-data">Visit states to discover your travel style!</p>';
+            return;
+        }
+
+        // Analyze travel patterns
+        const totalVisited = visitedStates.length;
+        const withDates = visitedStates.filter(s => s.visitDate).length;
+        const withNotes = visitedStates.filter(s => s.userNotes && s.userNotes.trim()).length;
+        
+        // Determine personality type
+        let personalityType = '';
+        let description = '';
+        let traits = [];
+
+        if (totalVisited >= 25) {
+            personalityType = '🌟 Master Explorer';
+            description = 'You\'re a seasoned traveler who has seen most of America!';
+            traits = ['Experienced', 'Adventurous', 'Well-Traveled'];
+        } else if (totalVisited >= 15) {
+            personalityType = '🗺️ Avid Adventurer';
+            description = 'You love exploring new places and have great travel momentum!';
+            traits = ['Enthusiastic', 'Curious', 'Goal-Oriented'];
+        } else if (totalVisited >= 8) {
+            personalityType = '🎒 Weekend Warrior';
+            description = 'You enjoy regular getaways and discovering new destinations!';
+            traits = ['Consistent', 'Exploratory', 'Balanced'];
+        } else if (totalVisited >= 3) {
+            personalityType = '🌱 Rising Explorer';
+            description = 'You\'re building great travel habits and expanding your horizons!';
+            traits = ['Growing', 'Motivated', 'Curious'];
+        } else {
+            personalityType = '🚀 Future Traveler';
+            description = 'Your adventure is just beginning - exciting times ahead!';
+            traits = ['Potential', 'Dreamer', 'Ready'];
+        }
+
+        // Add traits based on behavior
+        if (withNotes / Math.max(totalVisited, 1) > 0.7) {
+            traits.push('Thoughtful');
+        }
+        if (withDates / Math.max(totalVisited, 1) > 0.8) {
+            traits.push('Organized');
+        }
+
+        const traitsHTML = traits.map(trait => `<span class="trait-tag">${trait}</span>`).join('');
+
+        container.innerHTML = `
+            <div class="personality-type">${personalityType}</div>
+            <div class="personality-description">${description}</div>
+            <div class="personality-traits">${traitsHTML}</div>
+        `;
+    }
+
+    updateAchievements() {
+        const states = this.storage.getAllStates();
+        const homeState = this.storage.getHomeState();
+        const visitedStates = states.filter(state => state.status === 'visited' && state.name !== homeState);
+        
+        const achievements = [
+            {
+                id: 'first-state',
+                icon: '🎯',
+                name: 'First Steps',
+                description: '1 state',
+                unlocked: visitedStates.length >= 1
+            },
+            {
+                id: 'three-states',
+                icon: '🌟',
+                name: 'Getting Started',
+                description: '3 states',
+                unlocked: visitedStates.length >= 3
+            },
+            {
+                id: 'five-states',
+                icon: '⭐',
+                name: 'Explorer',
+                description: '5 states',
+                unlocked: visitedStates.length >= 5
+            },
+            {
+                id: 'seven-states',
+                icon: '🚀',
+                name: 'Rising Star',
+                description: '7 states',
+                unlocked: visitedStates.length >= 7
+            },
+            {
+                id: 'ten-states',
+                icon: '🏆',
+                name: 'Adventurer',
+                description: '10 states',
+                unlocked: visitedStates.length >= 10
+            },
+            {
+                id: 'fifteen-states',
+                icon: '🎖️',
+                name: 'Veteran Traveler',
+                description: '15 states',
+                unlocked: visitedStates.length >= 15
+            },
+            {
+                id: 'twenty-states',
+                icon: '👑',
+                name: 'Travel Royalty',
+                description: '20 states',
+                unlocked: visitedStates.length >= 20
+            },
+            {
+                id: 'twenty-five-states',
+                icon: '💎',
+                name: 'Diamond Explorer',
+                description: '25 states',
+                unlocked: visitedStates.length >= 25
+            },
+            {
+                id: 'thirty-states',
+                icon: '✨',
+                name: 'Elite Traveler',
+                description: '30 states',
+                unlocked: visitedStates.length >= 30
+            },
+            {
+                id: 'forty-states',
+                icon: '🔥',
+                name: 'Legend',
+                description: '40 states',
+                unlocked: visitedStates.length >= 40
+            },
+            {
+                id: 'all-states',
+                icon: '🏅',
+                name: 'Master of America',
+                description: 'All 50 states',
+                unlocked: visitedStates.length >= 50
+            },
+            {
+                id: 'quarter-complete',
+                icon: '🎊',
+                name: 'Quarter Master',
+                description: '25% complete',
+                unlocked: visitedStates.length >= 12
+            },
+            {
+                id: 'half-complete',
+                icon: '🎉',
+                name: 'Halfway Hero',
+                description: '50% complete',
+                unlocked: visitedStates.length >= 25
+            },
+            {
+                id: 'three-quarters',
+                icon: '🎆',
+                name: 'Almost There',
+                description: '75% complete',
+                unlocked: visitedStates.length >= 37
+            },
+            {
+                id: 'coast-to-coast',
+                icon: '🌊',
+                name: 'Coast to Coast',
+                description: 'Both coasts',
+                unlocked: this.hasCoastToCoast(visitedStates)
+            },
+            {
+                id: 'note-taker',
+                icon: '📝',
+                name: 'Memory Keeper',
+                description: '5 notes',
+                unlocked: visitedStates.filter(s => s.userNotes && s.userNotes.trim()).length >= 5
+            },
+            {
+                id: 'storyteller',
+                icon: '📖',
+                name: 'Storyteller',
+                description: '10 notes',
+                unlocked: visitedStates.filter(s => s.userNotes && s.userNotes.trim()).length >= 10
+            },
+            {
+                id: 'region-master',
+                icon: '🗺️',
+                name: 'Region Master',
+                description: 'Complete 1 region',
+                unlocked: this.hasCompleteRegion(visitedStates)
+            },
+            {
+                id: 'region-champion',
+                icon: '🏰',
+                name: 'Region Champion',
+                description: 'Complete 2 regions',
+                unlocked: this.hasCompleteRegions(visitedStates, 2)
+            },
+            {
+                id: 'speed-runner',
+                icon: '⚡',
+                name: 'Speed Runner',
+                description: '5 states in 1 year',
+                unlocked: this.hasSpeedRun(visitedStates)
+            },
+            {
+                id: 'marathon-runner',
+                icon: '🏃',
+                name: 'Marathon Runner',
+                description: '10 states in 1 year',
+                unlocked: this.hasMarathonRun(visitedStates)
+            },
+            {
+                id: 'mountain-climber',
+                icon: '⛰️',
+                name: 'Mountain Climber',
+                description: 'Visit 3 mountain states',
+                unlocked: this.hasMountainStates(visitedStates)
+            },
+            {
+                id: 'beach-lover',
+                icon: '🏖️',
+                name: 'Beach Lover',
+                description: 'Visit 5 coastal states',
+                unlocked: this.hasCoastalStates(visitedStates)
+            },
+            {
+                id: 'desert-explorer',
+                icon: '🌵',
+                name: 'Desert Explorer',
+                description: 'Visit 3 desert states',
+                unlocked: this.hasDesertStates(visitedStates)
+            }
+        ];
+
+        const container = document.getElementById('achievements');
+        
+        const achievementsHTML = achievements.map(achievement => `
+            <div class="achievement-badge ${achievement.unlocked ? 'unlocked' : 'locked'}" 
+                 data-tooltip="${achievement.name}: ${achievement.description}">
+                <span class="achievement-icon">${achievement.icon}</span>
+            </div>
+        `).join('');
+
+        container.innerHTML = achievementsHTML || '<p class="no-data">Start exploring to unlock achievements!</p>';
+    }
+
+    updateRecommendations() {
+        const states = this.storage.getAllStates();
+        const homeState = this.storage.getHomeState();
+        const container = document.getElementById('recommendations');
+        
+        if (!homeState) {
+            container.innerHTML = '<p class="no-data">Set your home state to get recommendations!</p>';
+            return;
+        }
+
+        const visitedStates = states.filter(state => state.status === 'visited');
+        const unvisitedStates = states.filter(state => state.status === 'not-visited' && state.name !== homeState);
+        
+        if (unvisitedStates.length === 0) {
+            container.innerHTML = '<p class="no-data">Congratulations! You\'ve visited all states!</p>';
+            return;
+        }
+
+        // Get recommendations based on distance and other factors
+        const recommendations = unvisitedStates
+            .map(state => {
+                const distance = this.storage.calculateDistance(homeState, state.name);
+                let reason = '';
+                
+                if (distance <= 300) {
+                    reason = 'Weekend trip';
+                } else if (distance <= 800) {
+                    reason = 'Road trip';
+                } else {
+                    reason = 'Far adventure';
+                }
+
+                return {
+                    state: state,
+                    distance: distance,
+                    reason: reason
+                };
+            })
+            .sort((a, b) => a.distance - b.distance)
+            .slice(0, 3);
+
+        const recommendationsHTML = recommendations.map(rec => `
+            <div class="recommendation-item">
+                <div class="recommendation-state">${rec.state.name}</div>
+                <div class="recommendation-reason">${rec.reason}</div>
+                <div class="recommendation-distance">${rec.distance} miles away</div>
+                <button class="recommendation-button" onclick="app.openDetailModal('${rec.state.name}')">
+                    Plan Visit
+                </button>
+            </div>
+        `).join('');
+
+        container.innerHTML = recommendationsHTML;
+    }
+
+    hasCoastToCoast(visitedStates) {
+        const eastCoast = ['Maine', 'New Hampshire', 'Massachusetts', 'Rhode Island', 'Connecticut', 'New York', 'New Jersey', 'Delaware', 'Maryland', 'Virginia', 'North Carolina', 'South Carolina', 'Georgia', 'Florida'];
+        const westCoast = ['Washington', 'Oregon', 'California'];
+        
+        const hasEast = visitedStates.some(state => eastCoast.includes(state.name));
+        const hasWest = visitedStates.some(state => westCoast.includes(state.name));
+        
+        return hasEast && hasWest;
+    }
+
+    hasCompleteRegion(visitedStates) {
+        const regions = {
+            'Northeast': ['Connecticut', 'Maine', 'Massachusetts', 'New Hampshire', 'New Jersey', 'New York', 'Pennsylvania', 'Rhode Island', 'Vermont'],
+            'Midwest': ['Illinois', 'Indiana', 'Iowa', 'Kansas', 'Michigan', 'Minnesota', 'Missouri', 'Nebraska', 'North Dakota', 'Ohio', 'South Dakota', 'Wisconsin'],
+            'South': ['Alabama', 'Arkansas', 'Delaware', 'Florida', 'Georgia', 'Kentucky', 'Louisiana', 'Maryland', 'Mississippi', 'North Carolina', 'Oklahoma', 'South Carolina', 'Tennessee', 'Texas', 'Virginia', 'West Virginia'],
+            'West': ['Alaska', 'Arizona', 'California', 'Colorado', 'Hawaii', 'Idaho', 'Montana', 'Nevada', 'New Mexico', 'Oregon', 'Utah', 'Washington', 'Wyoming']
+        };
+
+        const homeState = this.storage.getHomeState();
+        
+        return Object.values(regions).some(regionStates => {
+            const visitedInRegion = regionStates.filter(stateName => {
+                return visitedStates.some(visited => visited.name === stateName) && stateName !== homeState;
+            });
+            return visitedInRegion.length === regionStates.length;
+        });
+    }
+
+    hasCompleteRegions(visitedStates, requiredCount) {
+        const regions = {
+            'Northeast': ['Connecticut', 'Maine', 'Massachusetts', 'New Hampshire', 'New Jersey', 'New York', 'Pennsylvania', 'Rhode Island', 'Vermont'],
+            'Midwest': ['Illinois', 'Indiana', 'Iowa', 'Kansas', 'Michigan', 'Minnesota', 'Missouri', 'Nebraska', 'North Dakota', 'Ohio', 'South Dakota', 'Wisconsin'],
+            'South': ['Alabama', 'Arkansas', 'Delaware', 'Florida', 'Georgia', 'Kentucky', 'Louisiana', 'Maryland', 'Mississippi', 'North Carolina', 'Oklahoma', 'South Carolina', 'Tennessee', 'Texas', 'Virginia', 'West Virginia'],
+            'West': ['Alaska', 'Arizona', 'California', 'Colorado', 'Hawaii', 'Idaho', 'Montana', 'Nevada', 'New Mexico', 'Oregon', 'Utah', 'Washington', 'Wyoming']
+        };
+
+        const homeState = this.storage.getHomeState();
+        let completedRegions = 0;
+        
+        Object.values(regions).forEach(regionStates => {
+            const visitedInRegion = regionStates.filter(stateName => {
+                return visitedStates.some(visited => visited.name === stateName) && stateName !== homeState;
+            });
+            if (visitedInRegion.length === regionStates.length) {
+                completedRegions++;
+            }
+        });
+
+        return completedRegions >= requiredCount;
+    }
+
+    hasSpeedRun(visitedStates) {
+        if (visitedStates.length < 5) return false;
+        
+        const statesWithDates = visitedStates.filter(state => state.visitDate);
+        if (statesWithDates.length < 5) return false;
+
+        // Group by year
+        const yearGroups = {};
+        statesWithDates.forEach(state => {
+            const year = new Date(state.visitDate).getFullYear();
+            yearGroups[year] = (yearGroups[year] || 0) + 1;
+        });
+
+        // Check if any year has 5 or more visits
+        return Object.values(yearGroups).some(count => count >= 5);
+    }
+
+    hasMarathonRun(visitedStates) {
+        if (visitedStates.length < 10) return false;
+        
+        const statesWithDates = visitedStates.filter(state => state.visitDate);
+        if (statesWithDates.length < 10) return false;
+
+        // Group by year
+        const yearGroups = {};
+        statesWithDates.forEach(state => {
+            const year = new Date(state.visitDate).getFullYear();
+            yearGroups[year] = (yearGroups[year] || 0) + 1;
+        });
+
+        // Check if any year has 10 or more visits
+        return Object.values(yearGroups).some(count => count >= 10);
+    }
+
+    hasMountainStates(visitedStates) {
+        const mountainStates = ['Colorado', 'Montana', 'Wyoming', 'Idaho', 'Utah', 'Nevada', 'Alaska', 'Washington', 'Oregon'];
+        const visitedMountainStates = visitedStates.filter(state => mountainStates.includes(state.name));
+        return visitedMountainStates.length >= 3;
+    }
+
+    hasCoastalStates(visitedStates) {
+        const coastalStates = ['Maine', 'New Hampshire', 'Massachusetts', 'Rhode Island', 'Connecticut', 'New York', 'New Jersey', 'Delaware', 'Maryland', 'Virginia', 'North Carolina', 'South Carolina', 'Georgia', 'Florida', 'Alabama', 'Mississippi', 'Louisiana', 'Texas', 'California', 'Oregon', 'Washington', 'Alaska', 'Hawaii'];
+        const visitedCoastalStates = visitedStates.filter(state => coastalStates.includes(state.name));
+        return visitedCoastalStates.length >= 5;
+    }
+
+    hasDesertStates(visitedStates) {
+        const desertStates = ['Arizona', 'Nevada', 'New Mexico', 'Utah', 'California', 'Texas'];
+        const visitedDesertStates = visitedStates.filter(state => desertStates.includes(state.name));
+        return visitedDesertStates.length >= 3;
     }
 }
 
